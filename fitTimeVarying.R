@@ -64,7 +64,7 @@ data <- list(nA=10, nT=10, cases=cases, pop=pop, age=seq(0,99), ageLims=rbind(am
 # fit model
 check_cmdstan_toolchain(fix=T)
 set_cmdstan_path('C:/Users/Megan/Documents/.cmdstanr/cmdstan-2.26.0')
-setwd('C:/Users/Megan/Documents/GitHub/dengue-catalytic/StanCode')
+setwd('/~StanCode')
 mod <- cmdstan_model('timeVarying.stan', pedantic=T)
 fit <- mod$sample(data=data, chains=3, parallel_chains=3, iter_sampling=5000, refresh=100, iter_warmup=1000)
 stanfit <- rstan::read_stan_csv(fit$output_files())
