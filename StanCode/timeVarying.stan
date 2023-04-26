@@ -17,8 +17,8 @@ data {
 
 parameters {
   
-  real<lower=0> lam_H; // historic average FOI
-  real<lower=0> lam_t[nT]; // time varying FOI
+  real<lower=0,upper=0.15> lam_H; // historic average FOI
+  real<lower=0,upper=0.15> lam_t[nT]; // time varying FOI
   real<lower=0,upper=1> rho; // reporting rate of 2nd infections
   real<lower=0,upper=1> gamma; // relative reporting rate of 1st infections
 
@@ -39,7 +39,7 @@ transformed parameters {
   
   //--- immune profiles at beginning of time series
   susc0 = exp(-4*lam_H*age);
-  mono0 = 4*exp(-3*lam_H*age);
+  mono0 = 4*exp(-3*lam_H*age).*(1-exp(-lam_H*age));
   multi0 = 1 - (susc0 + mono0);
   
   //--- infants (assumes no infections in <1 year olds)
@@ -59,7 +59,7 @@ transformed parameters {
     
     susc[t,2:100] = susc[t-1,1:99] - 4*lam_t[t]*susc[t-1,1:99];
     mono[t,2:100] = mono[t-1,1:99] + 4*lam_t[t]*susc[t-1,1:99] - 3*lam_t[t]*mono[t-1,1:99];
-    multi[t,2:100] = multi[t-1,1:99] + 3*lam_t[t]*mono[t-1,1:99];
+    multi[t,2:100] = multi[t-1,1:99] + 3*lam_t[t]*mono[t-1,1:99]; 
     inc1[t,] = 4*lam_t[t]*susc[t-1,];
     inc2[t,] = 3*lam_t[t]*mono[t-1,];
     
